@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>HONEY not so sweet</title>
+  <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+  <link href="https://api.mapbox.com/mapbox-gl-js/v2.5.1/mapbox-gl.css" rel="stylesheet">
+  <script src="https://api.mapbox.com/mapbox-gl-js/v2.5.1/mapbox-gl.js"></script>
+  <style>
+  body { margin: 0; padding: 0; }
+  #map { position: absolute; top: 0; bottom: 0; width: 100%; }
+</style>
+</head>
+<body>
+  <style>
+  #map {
+    position: fixed;
+    width: 50%;
+  }
+  #features {
+    width: 50%;
+    margin-left: 50%;
+    font-family: sans-serif;
+    overflow-y: scroll;
+    background-color: #fafafa;
+  }
+  section {
+    padding: 25px 50px;
+    line-height: 25px;
+    border-bottom: 1px solid #ddd;
+    opacity: 0.25;
+    font-size: 13px;
+  }
+  section.active {
+    opacity: 1;
+  }
+  section:last-child {
+    border-bottom: none;
+    margin-bottom: 200px;
+  }
+</style>
+
+<div id="map"></div>
+<div id="features">
+  <section id="honey1" class="active">
+    <h3>New Zealand</h3>
+    <p>
+      Has of 2020, the largest exporter of honey
+    </p>
+  </section>
+  <section id="honey2">
+    <h3>Zhejiang</h3>
+    <p>
+      The second largest exporter, and once the largest for a number of years, China. First step of production are the flowers. Honey bees consume the pollen from
+      the flowers. Flowers that are prominent in this region are Ziziphus Jujube,
+      Brassica Compestris, Vicia Sativa var Villosa, Astragabus Simous Robina Psedocacia.
+    </p>
+  </section>
+  <section id="honey3">
+    <h3>Guangdong</h3>
+    <p>
+      Now the second largest exporter, China still dominates worlds honey production.
+      Along with rapid increase in honey production, honey consumption also continues to rise.
+      Unfortunately, there appears to be anomaly in the reports, honey bees are declining
+      yet the high demand of honey is being meet. What we discovered, there is honey adulteration.
+
+    </p>
+  </section>
+  <section id="honey4">
+    <h3>Vietnam</h3>
+    <p>
+
+    </p>
+  </section>
+  <section id="honey5">
+    <h3>Thailand</h3>
+    <p>
+
+    </p>
+  </section>
+  <section id="honey6">
+    <h3>Philippines</h3>
+    <p>
+
+    </p>
+
+    <small id="citation">
+      Adapted from
+      <a href="http://www.gutenberg.org/files/2346/2346-h/2346-h.htm">Project Gutenberg</a>
+    </small>
+  </section>
+</div>
+<script>
+
+
+mapboxgl.accessToken = 'pk.eyJ1IjoidHJlZWZhbGxkb3duIiwiYSI6ImNrYmlwNWkzaDBmYmgyeWswcTVsa3ZvMmUifQ.K98vl28x9Km5pWBpKL_opQ';
+const map = new mapboxgl.Map({
+  container: 'map',
+  // style: 'mapbox://styles/mapbox/streets-v11',
+  // you may create a new style here: https://studio.mapbox.com/
+  // style: 'mapbox://styles/mapbox/streets-v10',
+  // style: 'mapbox://styles/mapbox/basic-v9',
+  // style: 'mapbox://styles/mapbox/outdoors-v10',
+  // style: 'mapbox://styles/mapbox/light-v9',
+  // style: 'mapbox://styles/mapbox/dark-v9',
+  // style: 'mapbox://styles/mapbox/satellite-v9',
+  // style: 'mapbox://styles/mapbox/satellite-streets-v10',
+  // style: 'mapbox://styles/mapbox/navigation-preview-day-v2',
+  // style: 'mapbox://styles/mapbox/navigation-preview-night-v2',
+  // style: 'mapbox://styles/mapbox/navigation-guidance-day-v2',
+  style: 'mapbox://styles/mapbox/navigation-guidance-night-v2',
+  // style: 'mapbox://styles/brianhouse/cjn0u552b52kr2spdz6yhpqj4',
+
+  center: [171.03871, -43.10251],
+  zoom: 6,
+  bearing: 27,
+  pitch: 45
+});
+
+const chapters = {
+  'honey1': {
+    bearing: 27,
+    center: [171.03871, -43.10251],
+    zoom: 15.5,
+    pitch: 20
+  },
+  'honey2': {
+    duration: 6000,
+    center: [-0.07571203, 51.51424049],
+    bearing: 150,
+    zoom: 15,
+    pitch: 0
+  },
+  'honey3': {
+    bearing: 90,
+    center: [35.86166, 104.195397],
+    zoom: 13,
+    speed: 0.6,
+    pitch: 40
+  },
+  'honey4': {
+    bearing: 90,
+    center: [0.05991101, 51.48752939],
+    zoom: 12.3
+  },
+  'honey5': {
+    bearing: 45,
+    center: [-0.18335806, 51.49439521],
+    zoom: 15.3,
+    pitch: 20,
+    speed: 0.5
+  },
+  'honey6': {
+    bearing: 180,
+    center: [-0.19684993, 51.5033856],
+    zoom: 12.3
+  }
+};
+
+let activeChapterName = 'honey1';
+function setActiveChapter(chapterName) {
+  if (chapterName === activeChapterName) return;
+
+  map.flyTo(chapters[chapterName]);
+
+  document.getElementById(chapterName).classList.add('active');
+  document.getElementById(activeChapterName).classList.remove('active');
+
+  activeChapterName = chapterName;
+}
+
+function isElementOnScreen(id) {
+  const element = document.getElementById(id);
+  const bounds = element.getBoundingClientRect();
+  return bounds.top < window.innerHeight && bounds.bottom > 0;
+}
+
+// On every scroll event, check which element is on screen
+window.onscroll = () => {
+  for (const chapterName in chapters) {
+    if (isElementOnScreen(chapterName)) {
+      setActiveChapter(chapterName);
+      break;
+    }
+  }
+};
+</script>
+
+</body>
+</html>
